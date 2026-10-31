@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responde corretamente mr safadex</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: #ffe6e6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            color: #ff4d4d;
+            font-size: 26px;
+            margin-bottom: 30px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            border: none;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #btn-sim { background-color: #2ed573; color: white; }
+        #btn-nao { background-color: #ff4757; color: white; }
+        .final-msg { font-size: 28px; color: #ff4757; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="card-principal">
+        <h1 id="titulo-pergunta">Queres namorar com a Naira? ❤️</h1>
+        <div class="buttons" id="area-botoes">
+            <button id="btn-sim">Sim</button>
+            <button id="btn-nao">Não</button>
+        </div>
+    </div>
+
+    <script>
+        function enviarAviso(acao) {
+            // Faz um pedido invisível por imagem ou fetch para o Rust registar
+            fetch('/log/' + acao).catch(() => {});
+        }
+
+        const titulo = document.getElementById("titulo-pergunta");
+        const btnSim = document.getElementById("btn-sim");
+        const btnNao = document.getElementById("btn-nao");
+        const card = document.getElementById("card-principal");
+
+        let tamanhoSim = 18;
+        let paddingSim = 15;
+        let fase = 1;
+
+        btnNao.addEventListener("click", function() {
+            enviarAviso("clicou-no-botao-nao");
+            tamanhoSim += 25;
+            paddingSim += 15;
+            btnSim.style.fontSize = tamanhoSim + "px";
+            btnSim.style.padding = paddingSim + "px " + (paddingSim * 1.5) + "px";
+
+            if (tamanhoSim > 120) {
+                btnNao.style.display = "none";
+            }
+        });
+
+        btnSim.addEventListener("click", function() {
+            if (fase === 1) {
+                enviarAviso("aceitou-o-namoro");
+                fase = 2;
+                tamanhoSim = 18;
+                paddingSim = 15;
+                btnSim.style.fontSize = "18px";
+                btnSim.style.padding = "15px 25px";
+                btnNao.style.display = "inline-block";
+                titulo.textContent = "Muito bem mr safadex, o noivado é amanhã? 💍";
+            } else if (fase === 2) {
+                enviarAviso("aceitou-o-noivado-padre");
+                card.innerHTML = `
+                    <div class="final-msg">
+                        🎉 Muito bem, eu vou ser o padre! ⛪✨
+                    </div>
+                `;
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: { y: 0.6 }
+            });
+            }
+        });
+    </script>
+</body>
+</html>
